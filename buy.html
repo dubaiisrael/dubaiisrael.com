@@ -520,6 +520,7 @@ footer .logo{font-size:22px}
 <script>
 /* ===== הגדרות: עדכן כאן ===== */
 const WHATSAPP_NUMBER = "972507101725"; // מספר הוואטסאפ, בפורמט בינלאומי, בלי + ובלי 0 בהתחלה
+const CLARITY_ID = "zfmk6emac4"; // מזהה הפרויקט מ-Microsoft Clarity (clarity.microsoft.com). ריק = אין מדידה
 const SHEET_URL = "https://script.google.com/macros/s/AKfycby43NiYa113Mn1-o2s5MT8Yuyrjzy0wzwifckwRLpOJ7xB-wefOmank4qYhgZci65xG/exec"; // כתובת ה-Web App של Google Sheet (מסתיימת ב-/exec). בלי כתובת, הפניות לא נשמרות
 /* ============================ */
 
@@ -530,6 +531,15 @@ function sendLead(data){
       headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(data)});
   }catch(err){}
 }
+
+/* מדידה: Microsoft Clarity (הקלטות גלישה ומפות חום) */
+if(CLARITY_ID){
+  (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script",CLARITY_ID);
+}
+function track(ev){ try{ if(window.clarity){ window.clarity("event", ev); } }catch(e){} }
+document.querySelectorAll(".js-wa").forEach(function(a){ a.addEventListener("click", function(){ track("whatsapp_click"); }); });
 function waLink(t){ return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(t); }
 document.querySelectorAll(".js-wa").forEach(function(a){
   a.href = waLink("שלום, פניתי דרך הדף של Dubai Israel בנוגע לרכישת נכס בדובאי, ואשמח לתאם שיחת היכרות.");
@@ -563,6 +573,7 @@ document.querySelectorAll(".lead-form").forEach(function(form){
     if(phone.replace(/\D/g,"").length < 9){ alert("נא למלא מספר טלפון תקין"); return; }
     var msg = "שלום, השארתי פרטים בדף של Dubai Israel.\nשם: " + name + "\nטלפון: " + phone +
               (email ? "\nאימייל: " + email : "") + (budget ? "\nתקציב רכישה: " + budget : "");
+    track("lead_submitted");
     sendLead({name:name, phone:phone, email:email, budget:budget, page:"buy | "+location.href});
     var card = form.closest(".card-form");
     card.innerHTML = '<div class="ok"><div class="tick">' + TICK + '</div><h3>תודה, פנייתכם התקבלה</h3>' +
