@@ -246,6 +246,17 @@ footer .logo{font-size:22px}
   body{padding-bottom:72px}
 }
 </style>
+<!-- OpenAI Ads pixel -->
+<script>
+(function (w, d, s, u) {
+  if (w.oaiq) return;
+  var q = function () { q.q.push(arguments); };
+  q.q = []; w.oaiq = q;
+  var js = d.createElement(s); js.async = true; js.src = u;
+  var f = d.getElementsByTagName(s)[0]; f.parentNode.insertBefore(js, f);
+})(window, document, "script", "https://bzrcdn.openai.com/sdk/oaiq.min.js");
+oaiq("init", { pixelId: "WH1pAmdreXGJT2wJgWYHs1" });
+</script>
 </head>
 <body>
 
@@ -574,6 +585,7 @@ document.querySelectorAll(".lead-form").forEach(function(form){
     var msg = "שלום, השארתי פרטים בדף של Dubai Israel.\nשם: " + name + "\nטלפון: " + phone +
               (email ? "\nאימייל: " + email : "") + (budget ? "\nתקציב רכישה: " + budget : "");
     track("lead_submitted");
+    try{ oaiq("measure", "lead_created", { type: "customer_action" }); }catch(e){}
     sendLead({name:name, phone:phone, email:email, budget:budget, page:"buy | "+location.href});
     var card = form.closest(".card-form");
     card.innerHTML = '<div class="ok"><div class="tick">' + TICK + '</div><h3>תודה, פנייתכם התקבלה</h3>' +
